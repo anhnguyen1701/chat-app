@@ -57,8 +57,19 @@ public class UserDAO extends IDAO<User> {
     }
 
     @Override
-    public int insert(User object) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public int insert(User obj) {
+        try {
+            String sql = "insert into user(username, password) values (?,?)";
+            this.preStatement = this.conn.prepareStatement(sql);
+            this.preStatement.setString(1, obj.getUsername());
+            this.preStatement.setString(2, obj.getPassword());
+            int rowCount = this.preStatement.executeUpdate();
+            return rowCount;
+
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+            return 0;
+        }
     }
 
     @Override

@@ -60,12 +60,6 @@ public class ClientHandler extends Thread {
                     handleLogin(req);
                 } else if (command.equalsIgnoreCase(Action.SEND_MESSAGE)) {
                     handleSendText(req);
-//                } else if (command.equals(Action.JOIN_ROOM)) {
-//                    handleJoinRoom(req);
-//                } else if (command.equalsIgnoreCase(Action.CREATE_ROOM)) {
-//                    handleCreateRoom(req);
-//                } else if (command.equalsIgnoreCase(Action.FIND_ROOM)) {
-//                    handleFindRoom(req);
                 } else {
                     ObjectWrapper res = new ObjectWrapper();
                     res.sendTextToSingle(Action.SEND_MESSAGE, "server", "you", "error");
@@ -155,63 +149,6 @@ public class ClientHandler extends Thread {
             }
         }
     }
-
-//    private void handleFindRoom(ObjectWrapper req) throws IOException {
-//        String roomname = req.getRoomname();
-//        String usernameFrom = req.getUsernameFrom();
-//        ObjectWrapper res = new ObjectWrapper();
-//
-//        if (this.socketHandler.getRoomDAO().checkInRoom(roomname, usernameFrom)) {
-//            //check in db: user is in the room
-//            if (!this.setRoomnames.contains(roomname)) {
-//                System.out.println("found");
-//                this.setRoomnames.add("roomname");
-//                res.sendFindRoom(Action.FIND_ROOM, "server", roomname);
-//                send(res);
-//            }
-//        } else {
-//            System.out.println("not found");
-//            res.sendFindRoom(Action.FIND_ROOM, "server", null);
-//        }
-//    }
-
-//    private void handleJoinRoom(ObjectWrapper req) throws IOException {
-//        String roomname = req.getRoomname();
-//        String usernameFrom = req.getUsernameFrom();
-//        ObjectWrapper res = new ObjectWrapper();
-//
-//        if (this.socketHandler.getRoomDAO().joinRoom(roomname, usernameFrom)) {
-//            //check in database: user is in the room
-//            if (!this.setRoomnames.contains(roomname)) {
-//                System.out.println("join");
-//                this.setRoomnames.add(roomname);
-//                res.sendJoinRoom(Action.JOIN_ROOM, "server", roomname);
-//                send(res);
-//            }
-//        } else {
-//            System.out.println("not join");
-//            res.sendJoinRoom(Action.JOIN_ROOM, "server", null);
-//            send(res);
-//        }
-//    }
-
-//    private void handleCreateRoom(ObjectWrapper req) throws IOException {
-//        String roomname = req.getRoomname();
-//        String usernameFrom = req.getUsernameFrom();
-//        ObjectWrapper res = new ObjectWrapper();
-//        if (this.socketHandler.getRoomDAO().createRoom(roomname, usernameFrom)) {
-//            if (!this.setRoomnames.contains(roomname)) {
-//                System.out.println("created");
-//                this.setRoomnames.add(roomname);
-//                res.sendFindRoom(Action.JOIN_ROOM, "server", roomname);
-//                send(res);
-//            }
-//        } else {
-//            System.out.println("not create");
-//            res.sendFindRoom(Action.JOIN_ROOM, "server", null);
-//            send(res);
-//        }
-//    }
 
     //niternal function
     public String getUsername() {

@@ -5,7 +5,6 @@
  */
 package control;
 
-import control.dao.RoomDAO;
 import control.dao.UserDAO;
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -20,7 +19,6 @@ import view.ServerView;
 public class SocketHandler extends Thread {
 
     private UserDAO userDAO;
-    private RoomDAO roomDAO;
     private int serverPort;
     private ServerView serverView;
     private ArrayList<ClientHandler> listClients = new ArrayList<>();
@@ -34,7 +32,6 @@ public class SocketHandler extends Thread {
     public void run() {
         try {
             ServerSocket serverSocket = new ServerSocket(serverPort);
-            this.roomDAO = new RoomDAO(MySQLConn.getMySQLConnection());
             this.userDAO = new UserDAO(MySQLConn.getMySQLConnection());
             System.out.println("database connected");
             serverView.disableStartButton();
@@ -63,9 +60,5 @@ public class SocketHandler extends Thread {
 
     public UserDAO getUserDAO() {
         return userDAO;
-    }
-
-    public RoomDAO getRoomDAO() {
-        return roomDAO;
     }
 }

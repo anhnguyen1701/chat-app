@@ -21,7 +21,7 @@ public class MySQLConn {
         try {
             String hostName = "localhost";
 
-            String dbName = "chat_app";
+            String dbName = "chat-java";
             String userName = "root";
             String password = "root";
             return getMySQLConnection(hostName, dbName, userName, password);
