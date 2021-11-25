@@ -53,6 +53,8 @@ public class ObjectWrapper implements Serializable {
     }
 
     public void sendUpdateStatus(String command, int status, String usernameFrom) {
+        // status: 0 is off, 1 is on
+        // usernameFrom: user who is on or off
         this.command = command;
         this.status = status;
         this.usernameFrom = usernameFrom;

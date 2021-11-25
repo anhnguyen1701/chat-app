@@ -74,12 +74,17 @@ public class Client extends WindowAdapter implements ActionListener {
 
             case "Send":
                 String to = this.chatView.getLbSendTo();
-                String sendText = this.chatView.getTxtAreaSend();
+                String message = this.chatView.getTxtAreaSend();
 
-                if (!to.equals("...") && listOnlineUsers.contains(to) && sendText.length() > 0) {
-                    handleSendTextToSingle(to, sendText);
+                if (!to.equals("...") && listOnlineUsers.contains(to) && message.length() > 0) {
+                    handleSendTextToSingle(to, message);
                 }
                 break;
+//            case "send group":
+//                String groupname = this.chatView.getGroupName();
+//                String mesasge = this.chatView.getGroupTextMesasge();
+//
+//                handleS
         }
     }
 
@@ -163,6 +168,7 @@ public class Client extends WindowAdapter implements ActionListener {
                     } else if (command.equals(Action.SEND_MESSAGE)) {
                         System.out.println(req.toString());
                         if (req.getUsernameFrom() != null) {
+                            System.out.println(req.toString());
                             this.chatView.updateReceiveMessage(req.getUsernameFrom(), req.getText());
                         } else if (req.getRoomname() != null) {
                             this.chatView.updateReceiveRoomMessage(req.getUsernameFrom(), req.getRoomname(), req.getText());
@@ -198,7 +204,17 @@ public class Client extends WindowAdapter implements ActionListener {
         ObjectWrapper req = new ObjectWrapper();
         req.sendTextToSingle(Action.SEND_MESSAGE, this.username, usernameTo, sendText);
         send(req);
+        System.out.println("202: " + req.toString());
         this.chatView.updateSendMessage(usernameTo, sendText);
         this.chatView.clearTxtAreaSend();
     }
+
+//    private void handleSendTextToGroup(String groupName, String message) {
+//        ObjectWrapper req = new ObjectWrapper();
+//        req.sendTextToGroup(Action.SEND_MESSAGE, this.username, usernameTo, sendText);
+//        send(req);
+//        System.out.println("202: " + req.toString());
+//        this.chatView.updateSendMessage(usernameTo, sendText);
+//        this.chatView.clearTxtAreaSend();
+//    }
 }

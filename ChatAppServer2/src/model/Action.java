@@ -12,7 +12,7 @@ package model;
 public class Action {
 
     public static final String LOGIN = "login";
-    public static final String SEND_MESSAGE = "send_text";
+    public static final String SEND_MESSAGE = "send_message";
     public static final String UPDATE_STATUS = "update_status";
     public static final String END = "end";
 }

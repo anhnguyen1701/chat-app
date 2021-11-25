@@ -34,7 +34,6 @@ public class ServerView extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         txtPort = new javax.swing.JTextField();
         btnStart = new javax.swing.JButton();
-        btnEnd = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -43,8 +42,6 @@ public class ServerView extends javax.swing.JFrame {
         txtPort.setText("8888");
 
         btnStart.setText("Start");
-
-        btnEnd.setText("End");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -59,9 +56,7 @@ public class ServerView extends javax.swing.JFrame {
                         .addComponent(txtPort, javax.swing.GroupLayout.DEFAULT_SIZE, 232, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btnStart)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnEnd)))
+                        .addComponent(btnStart)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -72,10 +67,8 @@ public class ServerView extends javax.swing.JFrame {
                     .addComponent(jLabel1)
                     .addComponent(txtPort, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnStart)
-                    .addComponent(btnEnd))
-                .addContainerGap(108, Short.MAX_VALUE))
+                .addComponent(btnStart)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -83,7 +76,7 @@ public class ServerView extends javax.swing.JFrame {
 
     public void addButtonListener(ActionListener actionListener) {
         btnStart.addActionListener(actionListener);
-        btnEnd.addActionListener(actionListener);
+//        btnEnd.addActionListener(actionListener);
     }
 
     public void alert(String alertContent) {
@@ -100,7 +93,6 @@ public class ServerView extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnEnd;
     private javax.swing.JButton btnStart;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JTextField txtPort;
