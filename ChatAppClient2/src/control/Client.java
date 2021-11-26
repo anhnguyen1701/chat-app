@@ -31,7 +31,7 @@ public class Client extends WindowAdapter implements ActionListener {
     private String host;
     private int port;
     private ArrayList<String> listOnlineUsers;
-    private ArrayList<String> listRooms;
+    private ArrayList<String> listGroups;
     private String username;
     private Login loginView;
     private Chat chatView;
@@ -46,7 +46,7 @@ public class Client extends WindowAdapter implements ActionListener {
         this.loginView = loginView;
         this.chatView = new Chat();
         this.listOnlineUsers = new ArrayList<>();
-        this.listRooms = new ArrayList<>();
+        this.listGroups = new ArrayList<>();
 
         this.loginView.addListener(this);
         this.chatView.addButtonListener(this);
@@ -58,6 +58,9 @@ public class Client extends WindowAdapter implements ActionListener {
         }
     }
 
+// routes
+    //flow -> click -> send to server -> receive from server -> update ui components
+    //flow -> actionPerformed -> handleFuctions -> loop() to get Obj -> call update ui Function();
     @Override
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
@@ -80,6 +83,23 @@ public class Client extends WindowAdapter implements ActionListener {
                     handleSendTextToSingle(to, message);
                 }
                 break;
+            case "Create group":
+                String groupname = this.chatView.getGroupname();
+                if (groupname.length() > 0) {
+                    handleCreateGroup(groupname);
+                } else {
+                    this.chatView.show("Cannot create group");
+                }
+                break;
+            case "Refresh":
+                String groupnameR = this.chatView.getGroupname();
+                if (groupnameR.length() > 0) {
+                    handleRefreshRoom(groupnameR);
+                } else {
+                    this.chatView.show("cannot refresh");
+                }
+                break;
+
 //            case "send group":
 //                String groupname = this.chatView.getGroupName();
 //                String mesasge = this.chatView.getGroupTextMesasge();
@@ -134,16 +154,6 @@ public class Client extends WindowAdapter implements ActionListener {
         }
     }
 
-    private void send(ObjectWrapper req) {
-        try {
-            this.oos.writeObject(req);
-
-        } catch (Exception e) {
-            System.out.println("cannot send request");
-            e.printStackTrace();
-        }
-    }
-
     private void listening() {
         Thread thread = new Thread() {
             @Override
@@ -155,37 +165,7 @@ public class Client extends WindowAdapter implements ActionListener {
         thread.start();
     }
 
-    private void loop() {
-        try {
-            while (true) {
-                ObjectWrapper req = (ObjectWrapper) ois.readObject();
-                if (req != null) {
-                    System.out.println(req.toString());
-                    String command = req.getCommand();
-
-                    if (command.equals(Action.UPDATE_STATUS) && req.getUsernameFrom() != null) {
-                        handleUpdateStatus(req);
-                    } else if (command.equals(Action.SEND_MESSAGE)) {
-                        System.out.println(req.toString());
-                        if (req.getUsernameFrom() != null) {
-                            System.out.println(req.toString());
-                            this.chatView.updateReceiveMessage(req.getUsernameFrom(), req.getText());
-                        } else if (req.getRoomname() != null) {
-                            this.chatView.updateReceiveRoomMessage(req.getUsernameFrom(), req.getRoomname(), req.getText());
-                        }
-                    }
-                }
-            }
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-            try {
-                this.socket.close();
-            } catch (IOException ex) {
-                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-    }
-
+// gửi object đến server
     private void handleUpdateStatus(ObjectWrapper req) {
         if (req.getStatus() == 1) {
             if (!this.listOnlineUsers.contains(1)) {
@@ -209,6 +189,28 @@ public class Client extends WindowAdapter implements ActionListener {
         this.chatView.clearTxtAreaSend();
     }
 
+    private void handleCreateGroup(String groupname) {
+        ObjectWrapper req = new ObjectWrapper();
+        req.sendCreateGroup(username, groupname);
+        send(req);
+    }
+
+    private void handleRefreshRoom(String groupname) {
+        ObjectWrapper req = new ObjectWrapper();
+        req.sendRefreshGroup(this.username, groupname);
+        send(req);
+    }
+
+    private void send(ObjectWrapper req) {
+        try {
+            this.oos.writeObject(req);
+
+        } catch (Exception e) {
+            System.out.println("cannot send request");
+            e.printStackTrace();
+        }
+    }
+
 //    private void handleSendTextToGroup(String groupName, String message) {
 //        ObjectWrapper req = new ObjectWrapper();
 //        req.sendTextToGroup(Action.SEND_MESSAGE, this.username, usernameTo, sendText);
@@ -217,4 +219,74 @@ public class Client extends WindowAdapter implements ActionListener {
 //        this.chatView.updateSendMessage(usernameTo, sendText);
 //        this.chatView.clearTxtAreaSend();
 //    }
+    //receive Object from server
+    private void loop() {
+        try {
+            while (true) {
+                ObjectWrapper req = (ObjectWrapper) ois.readObject();
+                if (req != null) {
+                    System.out.println(req.toString());
+                    String action = req.getCommand();
+
+                    switch (action) {
+                        case Action.UPDATE_STATUS:
+                            if (req.getUsernameFrom() != null) {
+                                handleUpdateStatus(req);
+                            }
+                            break;
+
+                        case Action.SEND_MESSAGE:
+                            if (req.getUsernameFrom() != null) {
+                                this.chatView.updateReceiveMessage(req.getUsernameFrom(), req.getText());
+                            } else if (req.getGroupname() != null) {
+//                                this.chatView.updateReceiveMessage(req.getUsernameFrom(), req.getRoomname(), req.getText());
+                            }
+                            break;
+                        case Action.CREATE_GROUP:
+                            if (req.getGroupname() != null) {
+                                String groupname = req.getGroupname();
+                                if (!this.listGroups.contains(groupname)) {
+                                    this.listGroups.add(groupname);
+                                    this.chatView.updateGroupStatus(groupname);
+                                } else {
+                                    this.chatView.show("some error");
+                                }
+                            }
+                        case Action.JOIN_GROUP:
+                            if (req.getGroupname() != null) {
+                                String groupname = req.getGroupname();
+                                if (!this.listGroups.contains(groupname)) {
+                                    this.listGroups.add(groupname);
+                                    this.chatView.updateGroupStatus(groupname);
+                                } else {
+                                    this.chatView.show("join group error");
+                                }
+                            } else {
+                                this.chatView.show("join group error, group is not exist");
+                            }
+                        case Action.REFRESH_GROUP:
+                            if(req.getGroupname() != null) {
+                                String groupname = req.getGroupname();
+                                if(!this.listGroups.contains(groupname)) {
+                                    this.listGroups.add(groupname);
+                                    this.chatView.updateGroupStatus(groupname);
+                                } else {
+                                    this.chatView.show("you has already in this group");
+                                }
+                            } else {
+                                this.chatView.show("you need join group first");
+                            }
+                            break;
+                    }
+                }
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+            try {
+                this.socket.close();
+            } catch (IOException ex) {
+                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
 }

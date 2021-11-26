@@ -47,16 +47,6 @@ public class UserDAO extends IDAO<User> {
     }
 
     @Override
-    public User[] selectAll() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public User selectByName(String name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public int insert(User obj) {
         try {
             String sql = "insert into user(username, password) values (?,?)";

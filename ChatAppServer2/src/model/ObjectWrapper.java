@@ -15,81 +15,88 @@ public class ObjectWrapper implements Serializable {
 
     private static final long serialVersionUID = 6529685098267757690L;
 
-    private String command;
+    private String action;
     private String usernameFrom;
     private String usernameTo;
     private String text;
-    private String roomname;
+    private String groupname;
     private String username;
     private String password;
     private int status;
 
     public ObjectWrapper() {
     }
+    
+    public void sendRefreshGroup(String usernameFrom, String groupname) {
+        this.action = Action.REFRESH_GROUP;
+        this.usernameFrom = usernameFrom;
+        this.groupname = groupname;
+        
+    }
 
     public void sendTextToSingle(String command, String usernameFrom, String usernameTo, String text) {
-        this.command = command;
+        this.action = command;
         this.usernameFrom = usernameFrom;
         this.usernameTo = usernameTo;
         this.text = text;
     }
 
     public void sendTextToRoom(String command, String usernameFrom, String roomname, String text) {
-        this.command = command;
+        this.action = command;
         this.usernameFrom = usernameFrom;
-        this.roomname = roomname;
+        this.groupname = roomname;
         this.text = text;
     }
 
     public void sendLogin(String command, String username, String password) {
-        this.command = command;
+        this.action = command;
         this.username = username;
         this.password = password;
     }
 
     public void sendEnd(String command, String usernameFrom) {
-        this.command = command;
+        this.action = command;
         this.usernameFrom = usernameFrom;
     }
 
     public void sendUpdateStatus(String command, int status, String usernameFrom) {
         // status: 0 is off, 1 is on
-        // usernameFrom: user who is on or off
-        this.command = command;
+        // usernameFrom: user who is on o r off
+        this.action = command;
         this.status = status;
         this.usernameFrom = usernameFrom;
     }
 
     public void sendJoin(String command, String usernameFrom, String roomname) {
-        this.command = command;
+        this.action = command;
         this.usernameFrom = usernameFrom;
-        this.roomname = roomname;
+        this.groupname = roomname;
     }
 
     public void sendJoinRoom(String command, String usernameFrom, String roomname) {
-        this.command = command;
+        this.action = command;
         this.usernameFrom = usernameFrom;
-        this.roomname = roomname;
+        this.groupname = roomname;
     }
 
     public void sendFindRoom(String command, String usernameFrom, String roomname) {
-        this.command = command;
+        this.action = command;
         this.usernameFrom = usernameFrom;
-        this.roomname = roomname;
+        this.groupname = roomname;
     }
 
-    public void sendCreateRoom(String command, String usernameFrom, String roomname) {
-        this.command = command;
+    public void sendCreateGroup(String usernameFrom, String roomname) {
+        this.action = Action.CREATE_GROUP;
         this.usernameFrom = usernameFrom;
-        this.roomname = roomname;
+        this.groupname = roomname;
     }
 
     public String getCommand() {
-        return command;
+        return action;
     }
 
     public void setCommand(String command) {
-        this.command = command;
+        this.action = command;
     }
 
     public String getUsernameFrom() {
@@ -132,12 +139,12 @@ public class ObjectWrapper implements Serializable {
         this.password = password;
     }
 
-    public String getRoomname() {
-        return roomname;
+    public String getGroupname() {
+        return groupname;
     }
 
     public void setRoomname(String roomname) {
-        this.roomname = roomname;
+        this.groupname = roomname;
     }
 
     public int getStatus() {
@@ -146,7 +153,7 @@ public class ObjectWrapper implements Serializable {
 
     @Override
     public String toString() {
-        return "Request{" + "command=" + command + ", usernameFrom=" + usernameFrom + ", usernameTo=" + usernameTo + ", text=" + text + ", roomname=" + roomname + ", username=" + username + ", password=" + password + ", status=" + status + '}';
+        return "Request{" + "command=" + action + ", usernameFrom=" + usernameFrom + ", usernameTo=" + usernameTo + ", text=" + text + ", roomname=" + groupname + ", username=" + username + ", password=" + password + ", status=" + status + '}';
     }
 
     public void setStatus(int status) {

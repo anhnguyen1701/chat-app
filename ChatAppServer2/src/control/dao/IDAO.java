@@ -21,10 +21,6 @@ public abstract class IDAO<T> {
     Connection conn;
     ResultSet rs;
 
-    public abstract T[] selectAll();
-
-    public abstract T selectByName(String name);
-
     public abstract int insert(T object);
 
     public abstract int update(T object);

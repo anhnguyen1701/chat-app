@@ -5,6 +5,7 @@
  */
 package control;
 
+import control.dao.GroupDAO;
 import control.dao.UserDAO;
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -18,14 +19,25 @@ import view.ServerView;
  */
 public class SocketHandler extends Thread {
 
-    private UserDAO userDAO;
     private int serverPort;
-    private ServerView serverView;
     private ArrayList<ClientHandler> listClients = new ArrayList<>();
+
+    private UserDAO userDAO;
+    private GroupDAO groupDAO;
+
+    private ServerView serverView;
 
     public SocketHandler(int serverPort, ServerView serverView) {
         this.serverPort = serverPort;
         this.serverView = serverView;
+    }
+
+    public UserDAO getUserDAO() {
+        return userDAO;
+    }
+
+    public GroupDAO getGroupDAO() {
+        return groupDAO;
     }
 
     @Override
@@ -33,6 +45,7 @@ public class SocketHandler extends Thread {
         try {
             ServerSocket serverSocket = new ServerSocket(serverPort);
             this.userDAO = new UserDAO(MySQLConn.getMySQLConnection());
+            this.groupDAO = new GroupDAO(MySQLConn.getMySQLConnection());
             System.out.println("database connected");
             serverView.disableStartButton();
             System.out.println("server running");
@@ -56,9 +69,5 @@ public class SocketHandler extends Thread {
 
     public void removeClient(ClientHandler client) {
         this.listClients.remove(client);
-    }
-
-    public UserDAO getUserDAO() {
-        return userDAO;
     }
 }
