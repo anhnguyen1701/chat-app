@@ -100,11 +100,14 @@ public class Client extends WindowAdapter implements ActionListener {
                 }
                 break;
 
-//            case "send group":
-//                String groupname = this.chatView.getGroupName();
-//                String mesasge = this.chatView.getGroupTextMesasge();
-//
-//                handleS
+            case "Send Group":
+                String sendTo = this.chatView.getLbSendToGroup();
+                String messageGroup = this.chatView.getTxtAreaGroup();
+
+                if (!sendTo.equals("...") && this.listGroups.contains(sendTo) && messageGroup.length() > 0) {
+                    handleSendTextToGroup(sendTo, messageGroup);
+                }
+                break;
         }
     }
 
@@ -201,6 +204,14 @@ public class Client extends WindowAdapter implements ActionListener {
         send(req);
     }
 
+    private void handleSendTextToGroup(String groupName, String message) {
+        ObjectWrapper req = new ObjectWrapper();
+        req.sendTextToGroup(this.username, groupName, message);
+        send(req);
+        this.chatView.updateSendGroupMessage(groupName, message);
+        this.chatView.clearTxtAreaGroup();
+    }
+
     private void send(ObjectWrapper req) {
         try {
             this.oos.writeObject(req);
@@ -211,14 +222,6 @@ public class Client extends WindowAdapter implements ActionListener {
         }
     }
 
-//    private void handleSendTextToGroup(String groupName, String message) {
-//        ObjectWrapper req = new ObjectWrapper();
-//        req.sendTextToGroup(Action.SEND_MESSAGE, this.username, usernameTo, sendText);
-//        send(req);
-//        System.out.println("202: " + req.toString());
-//        this.chatView.updateSendMessage(usernameTo, sendText);
-//        this.chatView.clearTxtAreaSend();
-//    }
     //receive Object from server
     private void loop() {
         try {
@@ -236,10 +239,10 @@ public class Client extends WindowAdapter implements ActionListener {
                             break;
 
                         case Action.SEND_MESSAGE:
-                            if (req.getUsernameFrom() != null) {
+                            if (req.getUsernameTo() != null) {
                                 this.chatView.updateReceiveMessage(req.getUsernameFrom(), req.getText());
                             } else if (req.getGroupname() != null) {
-//                                this.chatView.updateReceiveMessage(req.getUsernameFrom(), req.getRoomname(), req.getText());
+                                this.chatView.updateReceiveGroupMessage(req.getUsernameFrom(), req.getGroupname(), req.getText());
                             }
                             break;
                         case Action.CREATE_GROUP:
@@ -265,9 +268,9 @@ public class Client extends WindowAdapter implements ActionListener {
                                 this.chatView.show("join group error, group is not exist");
                             }
                         case Action.REFRESH_GROUP:
-                            if(req.getGroupname() != null) {
+                            if (req.getGroupname() != null) {
                                 String groupname = req.getGroupname();
-                                if(!this.listGroups.contains(groupname)) {
+                                if (!this.listGroups.contains(groupname)) {
                                     this.listGroups.add(groupname);
                                     this.chatView.updateGroupStatus(groupname);
                                 } else {

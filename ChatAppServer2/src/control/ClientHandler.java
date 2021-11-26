@@ -21,24 +21,24 @@ import model.Action;
  * @author Anh Nguyen
  */
 public class ClientHandler extends Thread {
-    
+
     private String username = null;
     private HashSet<String> setGroupnames = new HashSet<>();
-    
+
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
     private Socket clientSocket;
-    
+
     private SocketHandler socketHandler;
-    
+
     public ClientHandler() {
     }
-    
+
     public ClientHandler(SocketHandler socketHandler, Socket clientSocket) {
         this.socketHandler = socketHandler;
         this.clientSocket = clientSocket;
     }
-    
+
     @Override
     public void run() {
         handleClientSocket();
@@ -50,14 +50,14 @@ public class ClientHandler extends Thread {
         try {
             this.ois = new ObjectInputStream(this.clientSocket.getInputStream());
             this.oos = new ObjectOutputStream(this.clientSocket.getOutputStream());
-            
+
             Object obj;
             while ((obj = ois.readObject()) != null) {
                 ObjectWrapper req = (ObjectWrapper) obj;
                 String action = req.getCommand();
-                
+
                 System.out.println("from: " + this.clientSocket + ": " + req.toString());
-                
+
                 switch (action) {
                     case Action.END:
                         handleLogout();
@@ -93,16 +93,16 @@ public class ClientHandler extends Thread {
         String username = req.getUsername();
         String password = req.getPassword();
         ObjectWrapper res = new ObjectWrapper();
-        
+
         if (this.socketHandler.getUserDAO().checkLogin(username, password)) {
             res = new ObjectWrapper();
             res.sendTextToSingle(Action.SEND_MESSAGE, "server", "you", "1");
-            
+
             this.oos.writeObject(res);
-            
+
             this.username = username;
             System.out.println(username + " login success");
-            
+
             ArrayList<ClientHandler> listClients = this.socketHandler.getListClients();
 
             // get other client online
@@ -128,12 +128,12 @@ public class ClientHandler extends Thread {
             this.oos.writeObject(res);
         }
     }
-    
+
     private void handleLogout() throws IOException {
         this.socketHandler.removeClient(this);
         ArrayList<ClientHandler> listClients = this.socketHandler.getListClients();
         ObjectWrapper res;
-        
+
         for (var client : listClients) {
             if (!this.username.equals(client.getUsername())) {
                 res = new ObjectWrapper();
@@ -143,9 +143,10 @@ public class ClientHandler extends Thread {
         }
         this.clientSocket.close();
     }
-    
+
     private void handleSendText(ObjectWrapper req) throws IOException {
         ArrayList<ClientHandler> listClients = this.socketHandler.getListClients();
+
         if (req.getUsernameTo() != null) {
             String usernameTo = req.getUsernameTo();
             for (var client : listClients) {
@@ -154,13 +155,13 @@ public class ClientHandler extends Thread {
                     client.send(req);
                 }
             }
+
         } else if (req.getGroupname() != null) {
-            String roomname = req.getGroupname();
+            String groupname = req.getGroupname();
             for (var client : listClients) {
-                if (client.isInRoom(roomname) && !client.getUsername().equalsIgnoreCase(req.getUsernameFrom())) {
-                    System.out.println("from: " + this.clientSocket + ": " + req.toString());
+                if (client.isInRoom(groupname) && !client.getUsername().equalsIgnoreCase(req.getUsernameFrom())) {
+                    System.out.println("163 - from: " + this.clientSocket + ": " + req.toString());
                     client.send(req);
-                    System.out.println("153: " + req.toString());
                 }
             }
         }
@@ -171,10 +172,10 @@ public class ClientHandler extends Thread {
         String groupname = req.getGroupname();
         String usernameFrom = req.getUsernameFrom();
         ObjectWrapper res = new ObjectWrapper();
-        
+
         try {
             int result = this.socketHandler.getGroupDAO().createGroup(groupname, usernameFrom);
-            
+
             if (result > 0) {
                 if (!this.setGroupnames.contains(groupname)) {
                     this.setGroupnames.add(groupname);
@@ -190,38 +191,38 @@ public class ClientHandler extends Thread {
             e.printStackTrace();
         }
     }
-    
+
     private void handleRefreshGroup(ObjectWrapper req) throws IOException {
         String groupname = req.getGroupname();
         String usernameFrom = req.getUsernameFrom();
         ObjectWrapper res = new ObjectWrapper();
-        
-        int result = this.socketHandler.getGroupDAO().isInGroup(groupname, usernameFrom);
-        if (result > 0) {
+
+//        int result = this.socketHandler.getGroupDAO().isInGroup(groupname, usernameFrom);
+//        if (result > 0) {
             if (!this.setGroupnames.contains(groupname)) {
                 this.setGroupnames.add(groupname);
                 res.sendRefreshGroup("server", groupname);
                 send(res);
             }
-        } else {
-            res.sendRefreshGroup("server", null);
-            send(res);
-        }
+//        } else {
+//            res.sendRefreshGroup("server", null);
+//            send(res);
+//        }
     }
 
     //internal function
     public String getUsername() {
         return this.username;
     }
-    
+
     public ArrayList<ClientHandler> getListClients() {
         return this.socketHandler.getListClients();
     }
-    
+
     public boolean isInRoom(String groupname) {
         return this.setGroupnames.contains(groupname);
     }
-    
+
     private void send(ObjectWrapper request) throws IOException {
         if (this.username != null) {
             this.oos.writeObject(request);

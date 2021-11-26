@@ -354,7 +354,6 @@ public class Chat extends javax.swing.JFrame {
         btnSend.addActionListener(actionListener);
         btnCreateGroup.addActionListener(actionListener);
         btnSendGroup.addActionListener(actionListener);
-//        btnJoin.addActionListener(actionListener);
         btnRefesh.addActionListener(actionListener);
     }
 
@@ -370,9 +369,6 @@ public class Chat extends javax.swing.JFrame {
         panelChatView.revalidate();
 
         lbSendTo.setText(username);
-
-//        appendToTextPane((JTextPane) jScrollPane.getViewport().getComponents()[0],
-//                "<div style='background-color:white; color:red'>" + "hi" + "</div>");
     }
 
     private void appendToTextPane(JTextPane jTextPane, String message) {
@@ -449,9 +445,11 @@ public class Chat extends javax.swing.JFrame {
         jScrollPane.setSize(panelChatViewGroup.getWidth(), panelChatViewGroup.getHeight());
         jScrollPane.setVisible(true);
 
+        lbSendToGroup.setText(groupname);
+
         panelChatViewGroup.revalidate();
     }
-    
+
     public void updateGroupStatus(String groupname) {
         if ((!this.listGroups.containsKey(groupname))) {
             JTextPane jTextPane = new JTextPane();
@@ -473,34 +471,21 @@ public class Chat extends javax.swing.JFrame {
         model.addRow(new Object[]{groupname});
     }
 
-//    public void updateReceiveRoomMessage(String usernameFrom, String roomname, String message) {
-//        System.out.println("432: updatereceive");
-//        if (this.listGroups.containsKey(roomname)) {
-//            appendToTextPane((JTextPane) this.listGroups.get(roomname).getViewport().getComponents()[0],
-//                    "<div style='width: 40%; background-color: blue; margin-top: 4px; float: left'>" + "    "
-//                    + "From: " + usernameFrom + "<br>" + message
-//                    + "<br>" + LocalDateTime.now().getHour() + ":" + LocalDateTime.now().getMinute() + "</div>");
-//        }
-//    }
-//
-//    public void updateSendRoomMessage(String roomname, String message) {
-//        if (this.listGroups.containsKey(roomname)) {
-//            appendToTextPane((JTextPane) this.listGroups.get(roomname).getViewport().getComponents()[0],
-//                    "<div style='width: 40%; background-color: blue; margin-top: 4px; float: right'>" + "    " + "<br>" + message
-//                    + "<br>" + LocalDateTime.now().getHour() + ":" + LocalDateTime.now().getMinute() + "</div>");
-//        }
-//    }
-    public void addCloseListener(WindowAdapter windowAdapter) {
-        this.addWindowListener(windowAdapter);
+    public void updateReceiveGroupMessage(String usernameFrom, String roomname, String message) {
+        if (this.listGroups.containsKey(roomname)) {
+            appendToTextPane((JTextPane) this.listGroups.get(roomname).getViewport().getComponents()[0],
+                    "<div style='width: 40%; background-color: blue; margin-top: 4px; float: left'>" + "    "
+                    + "From: " + usernameFrom + "<br>" + message
+                    + "<br>" + LocalDateTime.now().getHour() + ":" + LocalDateTime.now().getMinute() + "</div>");
+        }
     }
 
-    public void show(String content) {
-        JOptionPane.showMessageDialog(null, content);
-    }
-
-    public int confirm(String confirmContent) {
-        int res = JOptionPane.showConfirmDialog(this, confirmContent);
-        return res;
+    public void updateSendGroupMessage(String groupname, String message) {
+        if (this.listGroups.containsKey(groupname)) {
+            appendToTextPane((JTextPane) this.listGroups.get(groupname).getViewport().getComponents()[0],
+                    "<div style='width: 40%; background-color: blue; margin-top: 4px; float: right'>" + "    " + "<br>" + message
+                    + "<br>" + LocalDateTime.now().getHour() + ":" + LocalDateTime.now().getMinute() + "</div>");
+        }
     }
 
     public String getLbSendTo() {
@@ -515,22 +500,31 @@ public class Chat extends javax.swing.JFrame {
         txtAreaSend.setText("");
     }
 
-    //group
+//group
     public String getGroupname() {
         return txtGroupname.getText().trim();
     }
-//
-//    public String getRoomnameTo() {
-//        return sendRoomLabel.getText();
-//    }
-//
-//    public String getSendRoomText() {
-//        return sendRoomTextArea.getText();
-//    }
-//
-//    public void clearSendRoomTextArea() {
-//        sendRoomTextArea.setText("");
-//    }
+
+    public String getLbSendToGroup() {
+        return lbSendToGroup.getText().trim();
+    }
+
+    public String getTxtAreaGroup() {
+        return txtAreaGroup.getText().trim();
+    }
+
+    public void clearTxtAreaGroup() {
+        txtAreaGroup.setText("");
+    }
+
+//internal function
+    public void addCloseListener(WindowAdapter windowAdapter) {
+        this.addWindowListener(windowAdapter);
+    }
+
+    public void show(String content) {
+        JOptionPane.showMessageDialog(null, content);
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCreateGroup;

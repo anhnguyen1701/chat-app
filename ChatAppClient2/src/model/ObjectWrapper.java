@@ -26,12 +26,18 @@ public class ObjectWrapper implements Serializable {
 
     public ObjectWrapper() {
     }
-    
+
     public void sendRefreshGroup(String usernameFrom, String groupname) {
         this.action = Action.REFRESH_GROUP;
         this.usernameFrom = usernameFrom;
         this.groupname = groupname;
-        
+    }
+
+    public void sendTextToGroup(String usernameFrom, String groupname, String message) {
+        this.action = Action.SEND_MESSAGE;
+        this.usernameFrom = usernameFrom;
+        this.groupname = groupname;
+        this.text = message;
     }
 
     public void sendTextToSingle(String command, String usernameFrom, String usernameTo, String text) {
