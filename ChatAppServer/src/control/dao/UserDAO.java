@@ -45,6 +45,22 @@ public class UserDAO extends IDAO<User> {
         }
         return false;
     }
+    
+    public boolean checkUniqueUsername(String username) {
+        try {
+            String query = "select * from `user` where `username` = ?";
+            this.preStatement = this.conn.prepareStatement(query);
+            this.preStatement.setString(1, username);
+            rs = this.preStatement.executeQuery();
+            if(rs.next()) {
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return false;
+    }
 
     @Override
     public int insert(User obj) {

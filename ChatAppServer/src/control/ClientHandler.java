@@ -15,6 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.ObjectWrapper;
 import model.Action;
+import model.User;
 
 /**
  *
@@ -77,6 +78,9 @@ public class ClientHandler extends Thread {
                     case Action.SEND_ALL:
                         handleSendAll(req);
                         break;
+//                    case Action.REGISTER:
+//                        handleResgister(req);
+//                        break;
                     default:
                         ObjectWrapper res = new ObjectWrapper();
                         res.sendTextToSingle(Action.SEND_MESSAGE, "server", "you", "error");
@@ -197,16 +201,21 @@ public class ClientHandler extends Thread {
 
     private void handleRefreshGroup(ObjectWrapper req) throws IOException {
         String groupname = req.getGroupname();
-        String usernameFrom = req.getUsernameFrom();
         ObjectWrapper res = new ObjectWrapper();
 
-//        int result = this.socketHandler.getGroupDAO().isInGroup(groupname, usernameFrom);
-//        if (result > 0) {
         if (!this.setGroupnames.contains(groupname)) {
             this.setGroupnames.add(groupname);
             res.sendRefreshGroup("server", groupname);
             send(res);
         }
+
+//        int result = this.socketHandler.getGroupDAO().isInGroup(groupname, usernameFrom);
+//        if (result > 0) {
+//        if (!this.setGroupnames.contains(groupname)) {
+//            this.setGroupnames.add(groupname);
+//            res.sendRefreshGroup("server", groupname);
+//            send(res);
+//        }
 //        } else {
 //            res.sendRefreshGroup("server", null);
 //            send(res);
@@ -220,6 +229,31 @@ public class ClientHandler extends Thread {
             if (!client.getUsername().equals(req.getUsernameFrom())) {
                 client.send(req);
             }
+        }
+    }
+
+    private void handleResgister(ObjectWrapper req) throws IOException {
+        String username = req.getUsername();
+        String password = req.getPassword();
+        ObjectWrapper res = new ObjectWrapper();
+
+        boolean checkUniqueUsername = this.socketHandler.getUserDAO().checkUniqueUsername(username);
+
+        if (checkUniqueUsername == false) {
+            User user = new User(username, password);
+            int insertUser = this.socketHandler.getUserDAO().insert(user);
+            if (insertUser > 0) {
+                res.Register(username, password, "200");
+                send(res);
+            } else {
+                System.out.println("245: cannot insert user");
+                res.Register(username, password, "401");
+                send(res);
+            }
+        } else {
+            System.out.println("252: trung username");
+            res.Register(username, username, "402");
+            send(res);
         }
     }
 
@@ -239,6 +273,9 @@ public class ClientHandler extends Thread {
     private void send(ObjectWrapper request) throws IOException {
         if (this.username != null) {
             this.oos.writeObject(request);
+        } else {
+            System.out.println(request);
+            System.out.println("286: send() loi");
         }
     }
 }

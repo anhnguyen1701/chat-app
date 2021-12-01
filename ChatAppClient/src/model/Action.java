@@ -19,4 +19,5 @@ public class Action {
     public static final String JOIN_GROUP = "join_group";
     public static final String REFRESH_GROUP = "refresh_group";
     public static final String SEND_ALL = "send_all";
+    public static final String REGISTER = "resgister";
 }

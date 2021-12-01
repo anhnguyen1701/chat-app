@@ -356,6 +356,7 @@
             <Component class="javax.swing.JButton" name="btnRefesh">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Find"/>
+                <Property name="actionCommand" type="java.lang.String" value="Refresh"/>
               </Properties>
             </Component>
           </SubComponents>

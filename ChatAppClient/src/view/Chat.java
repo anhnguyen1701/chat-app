@@ -208,6 +208,7 @@ public class Chat extends javax.swing.JFrame {
         lbSendToGroup.setText("...");
 
         btnRefesh.setText("Find");
+        btnRefesh.setActionCommand("Refresh");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);

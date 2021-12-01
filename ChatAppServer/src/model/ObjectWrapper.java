@@ -22,11 +22,19 @@ public class ObjectWrapper implements Serializable {
     private String groupname;
     private String username;
     private String password;
+    private String statusCode;
     private int status;
 
     public ObjectWrapper() {
     }
-    
+
+    public void Register(String username, String password, String statusCode) {
+        this.action = Action.REGISTER;
+        this.username = username;
+        this.password = password;
+        this.statusCode = statusCode;
+    }
+
     public void sendMessageToAll(String message, String usernameFrom) {
         this.usernameFrom = usernameFrom;
         this.action = Action.SEND_ALL;
@@ -163,12 +171,20 @@ public class ObjectWrapper implements Serializable {
         return status;
     }
 
-    @Override
-    public String toString() {
-        return "Request{" + "command=" + action + ", usernameFrom=" + usernameFrom + ", usernameTo=" + usernameTo + ", text=" + text + ", roomname=" + groupname + ", username=" + username + ", password=" + password + ", status=" + status + '}';
-    }
-
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public String getStatusCode() {
+        return statusCode;
+    }
+
+    public void setStatusCode(String statusCode) {
+        this.statusCode = statusCode;
+    }
+
+    @Override
+    public String toString() {
+        return "ObjectWrapper{" + "action=" + action + ", usernameFrom=" + usernameFrom + ", usernameTo=" + usernameTo + ", text=" + text + ", groupname=" + groupname + ", username=" + username + ", password=" + password + ", statusCode=" + statusCode + ", status=" + status + '}';
     }
 }

@@ -114,6 +114,19 @@ public class Client extends WindowAdapter implements ActionListener {
                 if (messageAll.length() > 0) {
                     handleSendAll(messageAll);
                 }
+
+//            case "Register":
+//                String usernameR = this.loginView.getRegisterUsername();
+//                String passwordR = this.loginView.getRegisterPassword();
+//
+//                System.out.println(usernameR);
+//                System.out.println(passwordR);
+//
+//                if (usernameR.equals("") || passwordR.equals("")) {
+//                    this.loginView.show("username và password không được để trống");
+//                } else {
+//                    handleSendRegister(usernameR, passwordR);
+//                }
         }
     }
 
@@ -226,6 +239,12 @@ public class Client extends WindowAdapter implements ActionListener {
         this.chatView.clearTxtAreaAll();
     }
 
+    private void handleSendRegister(String username, String password) {
+        ObjectWrapper req = new ObjectWrapper();
+        req.Register(username, password, "request");
+        send(req);
+    }
+
     private void send(ObjectWrapper req) {
         try {
             this.oos.writeObject(req);
@@ -298,6 +317,17 @@ public class Client extends WindowAdapter implements ActionListener {
                             if (req.getUsernameFrom() != null) {
                                 this.chatView.updateReceiveAllMessage(req.getUsernameFrom(), req.getText());
                             }
+//                        case Action.REGISTER:
+//                            System.out.println(req.toString());
+//                            if (req.getStatusCode() == "200") {
+//                                this.loginView.show("Đăng ký thành công");
+//                            } else if (req.getStatusCode() == "402") {
+//                                this.loginView.show("Username này đã tồn tại");
+//                            } else if (req.getStatusCode() == "401") {
+//                                this.loginView.show("Đăng ký lỗi không xác định");
+//                            } else {
+//                                this.loginView.show("error");
+//                            }
                     }
                 }
             }
