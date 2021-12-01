@@ -1,11 +1,3 @@
-/ChatAppClient2/build/
-/ChatAppClient2/dist/
-
-/ChatAppServer2/build/
-/ChatAppServer2/dist/
-/ChatAppClient/build/
 /ChatAppClient/dist/
-/ChatAppClient/nbproject/private/
-/ChatAppServer/build/
-/ChatAppServer/dist/
-/ChatAppServer/nbproject/private/
+
+ChatAppClient/nbproject/
